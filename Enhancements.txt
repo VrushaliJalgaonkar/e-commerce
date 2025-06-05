@@ -1,0 +1,7 @@
+- Add Vault 
+- Add rate limiting on apis
+- Store images in Object storage & read from there [research for free options]
+- Add elastic search : for searching capabilities
+- Add monitoring
+- RBAC : autherization
+- Remember-me functionality

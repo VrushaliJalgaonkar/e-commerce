@@ -11,4 +11,4 @@
 - Tracing
 - Scaling
 - Trade offs
-
+- AI Image audit 

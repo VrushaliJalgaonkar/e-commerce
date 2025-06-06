@@ -1,7 +1,14 @@
 - Add Vault 
 - Add rate limiting on apis
+- Api timeout
+- Failover
 - Store images in Object storage & read from there [research for free options]
 - Add elastic search : for searching capabilities
-- Add monitoring
+- Add monitoring, observability
 - RBAC : autherization
 - Remember-me functionality
+- Caching
+- Tracing
+- Scaling
+- Trade offs
+

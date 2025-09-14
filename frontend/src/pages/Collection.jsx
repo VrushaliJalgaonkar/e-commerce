@@ -3,11 +3,21 @@ import { FaFilter } from "react-icons/fa";
 import FilterSidebar from "../components/Products/FilterSidebar";
 import SortOptions from "../components/Products/SortOptions";
 import ProductGrid from "../components/Products/ProductGrid";
+import { useParams, useSearchParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { fetchProductsByFilters } from "../../redux/slices/productsSlice";
 
 const Collection = () => {
-  const [products, setProducts] = useState([]);
+  const { collection } = useParams();
+  const [searchParams] = useSearchParams();
+  const dispatch = useDispatch();
+  const { products, loading, error } = useState((state) => state.products);
+  const queryParams = Object.fromEntries([...searchParams]);
   const sidebarRef = useRef(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  useEffect(() => {
+    dispatch(fetchProductsByFilters({ collection, ...queryParams }));
+  }, [dispatch, collection, searchParams]);
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -17,12 +27,7 @@ const Collection = () => {
       setIsSidebarOpen(false);
     }
   };
-  //   useEffect(() => {
-  //     //Add event listener for clicks
-  //     document.addEventListener("mousedown", handleClickOutside);
-  //     //Clean event listener
-  //     document.removeEventListener("mousedown", handleClickOutside);
-  //   });
+
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
@@ -30,93 +35,6 @@ const Collection = () => {
     };
   }, []);
 
-  useEffect(() => {
-    setTimeout(() => {
-      const fetchedProducts = [
-        {
-          _id: 1,
-          name: "Product 1",
-          price: 100,
-          images: [
-            {
-              url: "https://picsum.photos/500/500?random=14",
-            },
-          ],
-        },
-        {
-          _id: 2,
-          name: "Product 2",
-          price: 500,
-          images: [
-            {
-              url: "https://picsum.photos/500/500?random=15",
-            },
-          ],
-        },
-        {
-          _id: 3,
-          name: "Product 3",
-          price: 200,
-          images: [
-            {
-              url: "https://picsum.photos/500/500?random=16",
-            },
-          ],
-        },
-        {
-          _id: 4,
-          name: "Product 4",
-          price: 700,
-          images: [
-            {
-              url: "https://picsum.photos/500/500?random=17",
-            },
-          ],
-        },
-        {
-          _id: 5,
-          name: "Product 5",
-          price: 100,
-          images: [
-            {
-              url: "https://picsum.photos/500/500?random=18",
-            },
-          ],
-        },
-        {
-          _id: 6,
-          name: "Product 6",
-          price: 500,
-          images: [
-            {
-              url: "https://picsum.photos/500/500?random=19",
-            },
-          ],
-        },
-        {
-          _id: 7,
-          name: "Product 7",
-          price: 200,
-          images: [
-            {
-              url: "https://picsum.photos/500/500?random=20",
-            },
-          ],
-        },
-        {
-          _id: 8,
-          name: "Product 8",
-          price: 700,
-          images: [
-            {
-              url: "https://picsum.photos/500/500?random=21",
-            },
-          ],
-        },
-      ];
-      setProducts(fetchedProducts);
-    }, 1000);
-  }, []);
   return (
     <div className="flex flex-col lg:flex-row">
       {/* Mobile filter button */}
@@ -129,9 +47,8 @@ const Collection = () => {
       {/* Filter Sidebar */}
       <div
         ref={sidebarRef}
-        className={`${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } fixed inset-y-0 z-50 left-0 w-64 bg-white overflow-y-auto transition-transform duration-300 lg:static lg:translate-x-0`}
+        className={`${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } fixed inset-y-0 z-50 left-0 w-64 bg-white overflow-y-auto transition-transform duration-300 lg:static lg:translate-x-0`}
       >
         <FilterSidebar />
       </div>
@@ -140,7 +57,7 @@ const Collection = () => {
         {/* Sort options */}
         <SortOptions />
         {/* Product Grid */}
-        <ProductGrid products={products} />
+        <ProductGrid products={products} loading={loading} error={error} />
       </div>
     </div>
   );

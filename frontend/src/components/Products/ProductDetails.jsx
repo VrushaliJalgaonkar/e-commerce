@@ -1,77 +1,29 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import ProductGrid from "./ProductGrid";
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProductDetails, fetchSimilarProducts } from "../../../redux/slices/productsSlice";
+import { addToCart } from "../../../redux/slices/cartSlice";
 
-const selectedProduct = {
-  name: "Stylish Jacket",
-  price: 120,
-  originalPrice: 150,
-  description: "This is a Stylish Jacket. Perfect for any location.",
-  brand: "FashionBrand",
-  material: "Leather",
-  sizes: ["S", "M", "L", "XL"],
-  colors: ["Red", "Black", "White"],
-  images: [
-    {
-      url: "https://picsum.photos/500/500?random=12",
-      altText: "Stylish Jacket 1",
-    },
-    {
-      url: "https://picsum.photos/500/500?random=13",
-      altText: "Stylish Jacket 2",
-    },
-  ],
-};
-
-const similarProductsList = [
-  {
-    _id: 1,
-    name: "Product 1",
-    price: 100,
-    images: [
-      {
-        url: "https://picsum.photos/500/500?random=14",
-      },
-    ],
-  },
-  {
-    _id: 2,
-    name: "Product 2",
-    price: 500,
-    images: [
-      {
-        url: "https://picsum.photos/500/500?random=15",
-      },
-    ],
-  },
-  {
-    _id: 3,
-    name: "Product 3",
-    price: 200,
-    images: [
-      {
-        url: "https://picsum.photos/500/500?random=16",
-      },
-    ],
-  },
-  {
-    _id: 4,
-    name: "Product 4",
-    price: 700,
-    images: [
-      {
-        url: "https://picsum.photos/500/500?random=17",
-      },
-    ],
-  },
-];
-
-const ProductDetails = () => {
+const ProductDetails = ({ productId }) => {
+  const id = useParams();
+  const dispatch = useDispatch();
+  const { selectedProduct, loading, error, similiarProducts } = useSelector((state) => state.products);
+  const { user, guestId } = useSelector((state) => state.auth);
   const [mainImage, setMainImage] = useState(selectedProduct.images[0].url);
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
   const [quantity, setQuantity] = useState(1);
-  const [isButtonDisabled, setisButtonDisabled] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+  const productFetchId = productId || id;
+  useEffect(() => {
+    if(productFetchId){
+      dispatch(fetchProductDetails(productFetchId));
+      dispatch(fetchSimilarProducts({ id: productFetchId }));
+    }
+  }, [dispatch, productFetchId]);
   useEffect(() => {
     if (selectedProduct?.images?.length > 0) {
       setMainImage(selectedProduct.images[0].url);
@@ -94,16 +46,37 @@ const ProductDetails = () => {
       });
       return;
     }
-    setisButtonDisabled(true);
-    setTimeout(() => {
-      toast.success("Product added to cart!", {
-        duration: 1000,
+    setIsButtonDisabled(true);
+    dispatch(
+      addToCart({
+        productId: productFetchId,
+        quantity,
+        size: selectedSize,
+        color: selectedColor,
+        guestId,
+        userId: user?._id,
+      })
+    )
+    .then(() => {
+      toast.success("Product added to the cart!",{
+        duration:1000,
       });
-      setisButtonDisabled(false);
-    }, 500);
+    })
+    .finally(() => {
+      setIsButtonDisabled(false);
+    })
   };
+
+  if(loading){
+    return <p>Loading...</p>
+  }
+  if(error){
+    return <p>Error : {error}</p>
+  }
+
   return (
     <div className="p-6">
+      {selectedProduct && (
       <div className="max-w-6xl mx-auto bg-white p-8 rounded-lg">
         <div className="flex flex-col md:flex-row">
           {/* Left thumbnails */}
@@ -113,9 +86,8 @@ const ProductDetails = () => {
                 key={index}
                 src={image.url}
                 alt={image.altText || `Thumbnail ${index}`}
-                className={`w-20 h-20 object-cover rounded-lg cursor-pointer border ${
-                  mainImage === image.url ? "border-black" : "border-gray-300"
-                }`}
+                className={`w-20 h-20 object-cover rounded-lg cursor-pointer border ${mainImage === image.url ? "border-black" : "border-gray-300"
+                  }`}
                 onClick={() => setMainImage(image.url)}
               />
             ))}
@@ -137,9 +109,8 @@ const ProductDetails = () => {
                 key={index}
                 src={image.url}
                 alt={image.altText || `Thumbnail ${index}`}
-                className={`w-20 h-20 object-cover rounded-lg cursor-pointer border ${
-                  mainImage === image.url ? "border-black" : "border-gray-300"
-                }`}
+                className={`w-20 h-20 object-cover rounded-lg cursor-pointer border ${mainImage === image.url ? "border-black" : "border-gray-300"
+                  }`}
                 onClick={() => setMainImage(image.url)}
               />
             ))}
@@ -163,9 +134,8 @@ const ProductDetails = () => {
                 {selectedProduct.colors.map((color) => (
                   <button
                     key={color}
-                    className={`w-8 h-8 rounded-full border ${
-                      selectedColor == color ? "border-4" : "border-gray-300"
-                    } `}
+                    className={`w-8 h-8 rounded-full border ${selectedColor == color ? "border-4" : "border-gray-300"
+                      } `}
                     style={{
                       backgroundColor: color.toLocaleLowerCase(),
                       filter: "brightness(0.5)",
@@ -181,9 +151,8 @@ const ProductDetails = () => {
                 {selectedProduct.sizes.map((size) => (
                   <button
                     key={size}
-                    className={`px-4 py-2 rounded border ${
-                      selectedSize === size ? "bg-black text-white" : ""
-                    }`}
+                    className={`px-4 py-2 rounded border ${selectedSize === size ? "bg-black text-white" : ""
+                      }`}
                     onClick={() => setSelectedSize(size)}
                   >
                     {size}
@@ -212,11 +181,10 @@ const ProductDetails = () => {
             <button
               onClick={handleAddToCart}
               disabled={isButtonDisabled}
-              className={`bg-black text-white py-2 px-6 rounded w-full mb-4 ${
-                isButtonDisabled
+              className={`bg-black text-white py-2 px-6 rounded w-full mb-4 ${isButtonDisabled
                   ? "cursor-not-allowed opacity-50"
                   : "hover:bg-gray-900"
-              }`}
+                }`}
             >
               {isButtonDisabled ? "Adding..." : "ADD TO CART"}
             </button>
@@ -241,9 +209,10 @@ const ProductDetails = () => {
           <h2 className="test-2xl text-center font-medium mb-4">
             You May Also Like
           </h2>
-          <ProductGrid products={similarProductsList} />
+          <ProductGrid products={similiarProducts} loading={loading} error={error} />
         </div>
       </div>
+      )}
     </div>
   );
 };

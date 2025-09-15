@@ -4,14 +4,14 @@ import FilterSidebar from "../components/Products/FilterSidebar";
 import SortOptions from "../components/Products/SortOptions";
 import ProductGrid from "../components/Products/ProductGrid";
 import { useParams, useSearchParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 import { fetchProductsByFilters } from "../../redux/slices/productsSlice";
 
 const Collection = () => {
   const { collection } = useParams();
   const [searchParams] = useSearchParams();
   const dispatch = useDispatch();
-  const { products, loading, error } = useState((state) => state.products);
+  const { products, loading, error } = useSelector((state) => state.products);
   const queryParams = Object.fromEntries([...searchParams]);
   const sidebarRef = useRef(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

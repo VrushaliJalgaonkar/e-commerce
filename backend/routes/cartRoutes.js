@@ -84,11 +84,18 @@ router.put("/", async (req, res) => {
         let cart = await getCart(userId, guestId);
         if (!cart) return res.status(404).json({ message: "Cart not found" });
 
+        console.log("Incoming:", { productId, size, color });
+        console.log("Cart products:", cart.products.map(p => ({
+            productId: p.productId.toString(),
+            size: p.size,
+            color: p.color
+        })));
+
         const productIndex = cart.products.findIndex(
             (p) =>
                 p.productId.toString() === productId &&
-                p.size === size &&
-                p.color === color
+                p.size.toLowerCase() === size.toLowerCase() &&
+                p.color.toLowerCase() === color.toLowerCase()
         );
 
         if (productIndex > -1) {

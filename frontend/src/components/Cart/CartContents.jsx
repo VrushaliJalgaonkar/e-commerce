@@ -23,8 +23,9 @@ const CartContents = ({ cart, userId, guestId }) => {
   };
 
   const handleRemoveFromCart = (productId, size, color) => {
-    dispatch(removeFromCart(productId, guestId, userId, size, color));
-  }
+    dispatch(removeFromCart({ productId, guestId, userId, size, color }));
+  };
+  
   return (
     <div>
       {cart.products.map((product, index) => (

@@ -1,21 +1,51 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import register from "../assets/register.webp";
-import {registerUser} from "../../redux/slices/authSlice";
-import { useDispatch } from "react-redux";
+import { registerUser } from "../../redux/slices/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { mergeCart } from "../../redux/slices/cartSlice";
 
 const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { user, guestId } = useSelector((state) => state.auth);
+  const { cart } = useSelector((state) => state.cart);
+
+  // Get redirect parameter and check if it's checkout or something
+  const redirect = new URLSearchParams(location.search).get("redirect") || "/";
+  const isCheckoutRedirect = redirect.includes("checkout");
+
+  useEffect(() => {
+    if (user) {
+      const redirectTo = isCheckoutRedirect ? "/checkout" : "/"; // Ensure the redirect logic is clear
+
+      // If there are items in the cart, and we have a guestId, we merge the cart
+      if (cart?.products.length > 0 && guestId) {
+        dispatch(mergeCart({ guestId, user }))
+          .unwrap()
+          .then(() => {
+            navigate(isCheckoutRedirect ? "/checkout" : "/");
+          })
+          .catch((err) => {
+            console.error("Merge cart error", err);
+            navigate("/"); // fallback
+          });
+      } else {
+        // If no products to merge, just redirect
+        navigate(redirectTo);
+      }
+    }
+  }, [user, guestId, cart, navigate, isCheckoutRedirect, dispatch]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(registerUser({name, email, password}));
+    dispatch(registerUser({ name, email, password }));
   };
-  
+
   return (
     <div className="flex">
       <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-8 md:p-12">
@@ -45,7 +75,6 @@ const Register = () => {
               placeholder="Enter your email address"
             />
           </div>
-
           <div className="mb-4">
             <label className="block text-sm font-semibold mb-2">Password</label>
             <input
@@ -63,9 +92,8 @@ const Register = () => {
             Sign Up
           </button>
           <p className="mt-6 text-center text-sm">
-            Already have an account?
-            <Link to="/login" className="text-blue-500">
-              {" "}
+            Don't have an account? {" "}
+            <Link to={`/login?redirect=${encodeURIComponent(redirect)}`} className="text-blue-500">
               Login
             </Link>
           </p>

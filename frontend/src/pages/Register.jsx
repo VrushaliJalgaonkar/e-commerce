@@ -25,14 +25,16 @@ const Register = () => {
 
       // If there are items in the cart, and we have a guestId, we merge the cart
       if (cart?.products.length > 0 && guestId) {
-        dispatch(mergeCart({ guestId, user }))
+        dispatch(mergeCart({ guestId }))
           .unwrap()
-          .then(() => {
-            navigate(isCheckoutRedirect ? "/checkout" : "/");
+          .then((res) => {
+            console.log("Cart merged successfully", res);
+            localStorage.removeItem("guestId");
+            navigate(redirectTo);
           })
           .catch((err) => {
             console.error("Merge cart error", err);
-            navigate("/"); // fallback
+            navigate(redirectTo);
           });
       } else {
         // If no products to merge, just redirect

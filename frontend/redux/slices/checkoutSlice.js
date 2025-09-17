@@ -9,7 +9,7 @@ export const createCheckout = createAsyncThunk("checkout/createCheckout", async(
                 Authorization: `Bearer ${localStorage.getItem("userToken")}`
             }
         });
-        response.data;
+        return response.data;
     } catch (error) {
         return rejectWithValue(error.response.data);
     }

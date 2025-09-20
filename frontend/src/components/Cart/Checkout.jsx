@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import PayPalButton from "./PayPalButton";
 import { createCheckout } from "../../../redux/slices/checkoutSlice";
+import axios from "axios";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -33,26 +34,23 @@ const Checkout = () => {
       const res = await dispatch(createCheckout({
         checkoutItems : cart.products,
         shippingAddress,
-        PaymentMethod : "PayPal",
+        paymentMethod : "PayPal",
         totalPrice: cart.totalPrice
       }));
       if(res.payload && res.payload._id){
         setCheckoutId(res.payload._id); // Set checkout id if payment was successful
+        console.log("Checkout data:", res.payload);
       }
     }
   };
   const handlePaymentSuccess = async (details) => {
     try {
-      const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/checkout/pay`, {paymentStatus:"paid", paymentDetails : details}, {
+      const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/checkout/${checkoutId}/pay`, {paymentStatus:"paid", paymentDetails : details}, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("userToken")}`,
       },
       });
-      if(response.status === 200){
-        await handleFinalizeCheckout(checkoutId); // Finalize checkout if payment is successful
-      } else {
-        console.log(error);
-      }
+      await handleFinalizeCheckout(checkoutId); // Finalize checkout if payment is successful
     } catch (error) {
       console.log(error);   
     }
@@ -65,11 +63,7 @@ const Checkout = () => {
           Authorization: `Bearer ${localStorage.getItem("userToken")}`,
       },
       });
-      if(response.status === 200){
-        navigate("/order-confirmation");
-      } else {
-        console.error(error);
-      }
+      navigate("/order-confirmation");
     } catch (error) {
       console.error(error);
     }

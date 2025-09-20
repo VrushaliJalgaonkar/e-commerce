@@ -39,7 +39,7 @@ function App() {
             <Route path="checkout" element={<Checkout />} />
             <Route path="order-confirmation" element={<OrderConfirmation />} />
             <Route path="order/:id" element={<OrderDetails />} />
-            <Route path="my-orders" element={<MyOrdersPage />} />
+            <Route path="my-order" element={<MyOrdersPage />} />
           </Route>
           {/* Admin layout */}
           <Route path="/admin" element={<AdminLayout />}>

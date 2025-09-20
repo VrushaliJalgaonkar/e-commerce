@@ -7,7 +7,7 @@ const router = express.Router();
 // @route GET /api/orders/my-orders
 // @desc Get logged in user's orders
 // @acces Private
-router.get("/my-orders", protect, async (req, res) => {
+router.get("/my-order", protect, async (req, res) => {
     try {
         // Find orders for the authenticated user
         const orders = await Order.find({ user: req.user._id }).sort({

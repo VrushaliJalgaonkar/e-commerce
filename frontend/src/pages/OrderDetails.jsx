@@ -1,38 +1,20 @@
-import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { fetchOrderDetails } from "../../redux/slices/orderSlice";
 
 const OrderDetails = () => {
   const { id } = useParams();
-  const [orderDetails, setOrderDetails] = useState(null);
+  const dispatch = useDispatch();
+  const {orderDetails, loading, error} = useSelector((state) => state.order);
   useEffect(() => {
-    const mockOrderDetails = {
-      _id: id,
-      createdAt: new Date(),
-      isPaid: true,
-      isDelivered: false,
-      paymentMethod: "PayPal",
-      shippingMethod: "Standard",
-      shippingAddress: { city: "NewYork", country: "USA" },
-      orderItems: [
-        {
-          ProductId: 1,
-          name: "T-Shirt",
-          quantity: 1,
-          price: 150,
-          image: "https://picsum.photos/150?random=1",
-        },
-        {
-          ProductId: 2,
-          name: "T-Shirt",
-          quantity: 1,
-          price: 100,
-          image: "https://picsum.photos/150?random=2",
-        },
-      ],
-    };
-    setOrderDetails(mockOrderDetails);
-  }, [id]);
+    dispatch(fetchOrderDetails(id));
+  }, [dispatch]);
+
+  if(loading) return <p>Loading ...</p>
+  if(error) return <p>Error: {error}</p>
+
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6">
       <h2 className="text-2xl md:text-3xl font-bold mb-6">Order Details</h2>
@@ -124,7 +106,7 @@ const OrderDetails = () => {
             </table>
           </div>
           {/* Back to My Orders Page Link */}
-          <Link to="/my-orders" className="text-blue-500 hover:underline">Back to My Orders</Link>
+          <Link to="/my-order" className="text-blue-500 hover:underline">Back to My Orders</Link>
         </div>
       )}
     </div>

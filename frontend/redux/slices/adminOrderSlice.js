@@ -7,7 +7,7 @@ const USER_TOKEN = `Bearer ${localStorage.getItem("userToken")}`
 // Fetch all orders (admin only)
 export const fetchAllOrders = createAsyncThunk("adminOrders/fetchAllOrders", async (_, { rejectWithValue }) => {
     try {
-        const response = await axios.get(`${API_URL}/api/admin/orders}`, {
+        const response = await axios.get(`${API_URL}/api/admin/orders`, {
             headers: {
                 Authorization: USER_TOKEN,
             }
@@ -22,7 +22,7 @@ export const fetchAllOrders = createAsyncThunk("adminOrders/fetchAllOrders", asy
 // Update order delivery status (admin only)
 export const updateOrderStatus = createAsyncThunk("adminOrders/updateOrderStatus", async ({ id, status }, { rejectWithValue }) => {
     try {
-        const response = await axios.put(`${API_URL}/api/admin/orders/${id}}`, { status }, {
+        const response = await axios.put(`${API_URL}/api/admin/orders/${id}`, { status }, {
             headers: {
                 Authorization: USER_TOKEN,
             }
@@ -37,7 +37,7 @@ export const updateOrderStatus = createAsyncThunk("adminOrders/updateOrderStatus
 // Delete an order delivery status (admin only)
 export const deleteOrder = createAsyncThunk("adminOrders/deleteOrder", async (id, { rejectWithValue }) => {
     try {
-        await axios.delete(`${API_URL}/api/admin/orders/${id}}`, {
+        await axios.delete(`${API_URL}/api/admin/orders/${id}`, {
             headers: {
                 Authorization: USER_TOKEN,
             }

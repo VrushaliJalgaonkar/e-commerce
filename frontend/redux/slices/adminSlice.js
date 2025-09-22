@@ -9,23 +9,29 @@ export const fetchUsers = createAsyncThunk("admin/fetchUsers", async () => {
                 Authorization: `Bearer ${localStorage.getItem("userToken")}`
             }
         });
-    response.data;
+    return response.data;
 });
 
-// Add the create user action
-export const addUser = createAsyncThunk("admin/addUser", async (userData, { rejectWithValue }) => {
-    try {
-        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/admin/users`,
-            {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("userToken")}`
-                }
-            });
+export const addUser = createAsyncThunk(
+    "admin/addUser",
+    async (userData, { rejectWithValue }) => {
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_BACKEND_URL}/api/admin/users`,
+          userData, // send the actual form data here
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+            },
+          }
+        );
         return response.data;
-    } catch (error) {
-        return rejectWithValue(error.response.data);
+      } catch (error) {
+        return rejectWithValue(error.response?.data || { message: "Unknown error" });
+      }
     }
-});
+  );
+  
 
 // Update user info
 export const updateUser = createAsyncThunk("/admin/updateUser", async ({ id, name, email, role }) => {
@@ -36,13 +42,13 @@ export const updateUser = createAsyncThunk("/admin/updateUser", async ({ id, nam
                 Authorization: `Bearer ${localStorage.getItem("userToken")}`
             }
         });
-    return response.data;
+    return response.data.user;
 });
 
 // Delete a User
 export const deleteUser = createAsyncThunk("admin/deleteUser", async (id) => {
     await axios.delete(
-        `${import.meta.env.VITE_BACKEND_URL}/api/admin/users/${id}}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/admin/users/${id}`,
         {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("userToken")}`

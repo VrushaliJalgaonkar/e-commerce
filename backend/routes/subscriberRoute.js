@@ -23,7 +23,7 @@ router.post("/", async (req, res) => {
         await subscriber.save();
         res.status(201).json({ message: "Successfully subscribed to the newsletter!" });
     } catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).send("Server Error");
     }
 });

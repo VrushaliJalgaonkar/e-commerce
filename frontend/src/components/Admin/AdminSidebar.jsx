@@ -6,11 +6,19 @@ import {
   FaUser,
 } from "react-icons/fa";
 import { Link, NavLink, useNavigate } from "react-router-dom";
+import {useDispatch} from "react-redux"
+import { logout } from "../../../redux/slices/authSlice";
+import { clearCart } from "../../../redux/slices/cartSlice";
 const AdminSidebar = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const handleLogout = () => {
+    dispatch(logout());
+    dispatch(clearCart());
     navigate("/");
   };
+
   return (
     <div className="p-6">
       <div className="mb-6">

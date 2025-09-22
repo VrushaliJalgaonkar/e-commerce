@@ -15,9 +15,12 @@ const Collection = () => {
   const queryParams = Object.fromEntries([...searchParams]);
   const sidebarRef = useRef(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const queryString = searchParams.toString();
+
   useEffect(() => {
     dispatch(fetchProductsByFilters({ collection, ...queryParams }));
-  }, [dispatch, collection, searchParams]);
+  }, [dispatch, collection, queryString]);
+
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };

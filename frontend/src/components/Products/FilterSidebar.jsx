@@ -67,7 +67,6 @@ const FilterSidebar = () => {
 
   const handleFilterChange = (e) => {
     const { name, value, checked, type } = e.target;
-    console.log({ name, value, checked, type });
     let newFilters = { ...filters };
     if (type === "checkbox") {
       if (checked) {
@@ -79,7 +78,6 @@ const FilterSidebar = () => {
       newFilters[name] = value;
     }
     setFilters(newFilters);
-    // console.log(newFilters);
     updateUrlParams(newFilters);
   };
 

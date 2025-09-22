@@ -6,8 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProductDetails, fetchSimilarProducts } from "../../../redux/slices/productsSlice";
 import { addToCart } from "../../../redux/slices/cartSlice";
 
-const ProductDetails = ({ productId }) => {
-  const { id: paramId } = useParams(); // Extract id from params
+const ProductDetails = () => {
+  const { id } = useParams();
   const dispatch = useDispatch();
   const { selectedProduct, loading, error, similiarProducts } = useSelector((state) => state.products);
   const { user, guestId } = useSelector((state) => state.auth);
@@ -18,15 +18,13 @@ const ProductDetails = ({ productId }) => {
   const [quantity, setQuantity] = useState(1);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
-  const productFetchId = productId || paramId;
-
   // Fetch product and similar products
   useEffect(() => {
-    if (productFetchId) {
-      dispatch(fetchProductDetails(productFetchId));
-      dispatch(fetchSimilarProducts({ id: productFetchId }));
+    if (id) {
+      dispatch(fetchProductDetails(id));
+      dispatch(fetchSimilarProducts({ id: id }));
     }
-  }, [dispatch, productFetchId]);
+  }, [dispatch, id]);
 
   // Update main image when product loads
   useEffect(() => {
@@ -49,7 +47,7 @@ const ProductDetails = ({ productId }) => {
     setIsButtonDisabled(true);
     dispatch(
       addToCart({
-        productId: productFetchId,
+        productId: id,
         quantity,
         size: selectedSize,
         color: selectedColor,

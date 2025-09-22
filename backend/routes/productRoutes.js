@@ -89,42 +89,42 @@ router.get("/similar/:id", async (req, res) => {
   }
 });
 
-/**
- * =========================================
- * GET /api/products - All products with filters
- * Public
- * =========================================
- */
-router.get("/", async (req, res) => {
-  try {
-    const { collection, size, color, gender, minPrice, maxPrice, sortBy, search, category, material, brand, limit } = req.query;
+// /**
+//  * =========================================
+//  * GET /api/products - All products with filters
+//  * Public
+//  * =========================================
+//  */
+// router.get("/", async (req, res) => {
+//   try {
+//     const { collection, size, color, gender, minPrice, maxPrice, sortBy, search, category, material, brand, limit } = req.query;
 
-    let query = {};
+//     let query = {};
 
-    if (collection && collection.toLowerCase() !== "all") query.collections = collection;
-    if (category && category.toLowerCase() !== "all") query.category = category;
-    if (material) query.material = { $in: material.split(",") };
-    if (brand) query.brand = { $in: brand.split(",") };
-    if (size) query.sizes = { $in: size.split(",") };
-    if (color) query.colors = { $in: color.split(",") };
-    if (gender) query.gender = gender;
-    if (minPrice || maxPrice) query.price = { ...(minPrice && { $gte: Number(minPrice) }), ...(maxPrice && { $lte: Number(maxPrice) }) };
-    if (search) query.$or = [{ name: { $regex: search, $options: "i" } }, { description: { $regex: search, $options: "i" } }];
+//     if (collection && collection.toLowerCase() !== "all") query.collections = collection;
+//     if (category && category.toLowerCase() !== "all") query.category = category;
+//     if (material) query.material = { $in: material.split(",") };
+//     if (brand) query.brand = { $in: brand.split(",") };
+//     if (size) query.sizes = { $in: size.split(",") };
+//     if (color) query.colors = { $in: color.split(",") };
+//     if (gender) query.gender = gender;
+//     if (minPrice || maxPrice) query.price = { ...(minPrice && { $gte: Number(minPrice) }), ...(maxPrice && { $lte: Number(maxPrice) }) };
+//     if (search) query.$or = [{ name: { $regex: search, $options: "i" } }, { description: { $regex: search, $options: "i" } }];
 
-    let sort = {};
-    switch (sortBy) {
-      case "priceAsc": sort = { price: 1 }; break;
-      case "priceDesc": sort = { price: -1 }; break;
-      case "popularity": sort = { rating: -1 }; break;
-    }
+//     let sort = {};
+//     switch (sortBy) {
+//       case "priceAsc": sort = { price: 1 }; break;
+//       case "priceDesc": sort = { price: -1 }; break;
+//       case "popularity": sort = { rating: -1 }; break;
+//     }
 
-    const products = await Product.find(query).sort(sort).limit(Number(limit) || 0);
-    res.json(products);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Server Error");
-  }
-});
+//     const products = await Product.find(query).sort(sort).limit(Number(limit) || 0);
+//     res.json(products);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send("Server Error");
+//   }
+// });
 
 /**
  * =========================================
@@ -227,7 +227,7 @@ router.get("/", async (req, res) => {
     }
 
     if (color) {
-      query.color = { $in: [color] };
+      query.colors = { $in: color.split(",") };
     }
 
     if (gender) {

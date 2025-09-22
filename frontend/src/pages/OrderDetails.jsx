@@ -83,7 +83,7 @@ const OrderDetails = () => {
               </thead>
               <tbody>
                 {orderDetails.orderItems.map((item) => (
-                  <tr key={item.ProductId} className="border-b">
+                  <tr key={item.productId} className="border-b">
                     <td className="py-2 px-4 flex items-center">
                       <img
                         src={item.image}
@@ -91,7 +91,7 @@ const OrderDetails = () => {
                         className="w-12 h-12 object-cover rounded-lg mr-4"
                       />
                       <Link
-                        to={`/product/${item.ProductId}`}
+                        to={`/product/${item.productId}`}
                         className="text-blue-500 hover:underline"
                       >
                         {item.name}

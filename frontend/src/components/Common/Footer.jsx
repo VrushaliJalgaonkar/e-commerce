@@ -39,7 +39,7 @@ const Footer = () => {
           <ul className="space-y-2 text-gray-600">
             <li>
               <Link to="#" className="hover:text-gray-500 transition-colors">
-                Men's Top wear
+                Men's Top Wear
               </Link>
             </li>
             <li>
@@ -49,12 +49,12 @@ const Footer = () => {
             </li>
             <li>
               <Link to="#" className="hover:text-gray-500 transition-colors">
-                Women's Top wear
+                Women's Top Wear
               </Link>
             </li>
             <li>
               <Link to="#" className="hover:text-gray-500 transition-colors">
-                Women's Bottom wear
+                Women's Bottom Wear
               </Link>
             </li>
           </ul>

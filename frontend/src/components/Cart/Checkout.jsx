@@ -39,7 +39,6 @@ const Checkout = () => {
       }));
       if(res.payload && res.payload._id){
         setCheckoutId(res.payload._id); // Set checkout id if payment was successful
-        console.log("Checkout data:", res.payload);
       }
     }
   };
@@ -52,7 +51,7 @@ const Checkout = () => {
       });
       await handleFinalizeCheckout(checkoutId); // Finalize checkout if payment is successful
     } catch (error) {
-      console.log(error);   
+      console.error(error);   
     }
   };
 

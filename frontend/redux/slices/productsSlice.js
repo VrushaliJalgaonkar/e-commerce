@@ -6,7 +6,7 @@ export const fetchProductsByFilters = createAsyncThunk("products/fetchByFilters"
     collection, size, color, gender, minPrice, maxPrice, sortBy, search, category, material, brand, limit,
 }) => {
     const query = new URLSearchParams();
-    if (collection) query.append("collection", collection);
+    if (collection) query.append("collections", collection);
     if (size) query.append("size", size);
     if (color) query.append("color", color);
     if (gender) query.append("gender", gender);
@@ -71,7 +71,7 @@ const productSlice = createSlice({
     },
     reducers: {
         setFilters: (state, action) => {
-            state.filters = { ...state.filters, ...state.payload };
+            state.filters = { ...state.filters, ...action.payload };
         },
         clearFilters: (state) => {
             state.filters = {
